@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        /*stage('SCM') {
+        stage('SCM') {
             steps {
                 //git url: "https://github.com/kodi24fever/reactjs-portfolio.git" ,branch: "master"
                 //git url: "https://github.com/Crazyorchid/cont8-test.git" ,branch: "main"
@@ -28,14 +28,14 @@ pipeline {
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                     dir(TF_DIR){
-                    //sh "./run.sh"
-                    sh "terraform init && terraform plan"
+                    sh "./run.sh"
+                    //sh "terraform init && terraform plan"
                     }
                 } 
             }
         }
 
-        /*stage("upload"){
+        stage("upload"){
             steps{
                 withAWS(credentials: AWS_CRED, region: 'ap-southeast-2'){
                     script{
@@ -44,6 +44,6 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
     }
 }
