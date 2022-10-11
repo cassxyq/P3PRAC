@@ -28,8 +28,8 @@ pipeline {
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                     dir(TF_DIR){
-                        script{sh './run.sh'}
-                        //sh "terraform init && terraform plan"
+                    sh "terraorm init && terraform applay -auto-approve"
+                    //sh "terraform init && terraform plan"
                     }
                 } 
             }
