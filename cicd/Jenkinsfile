@@ -27,7 +27,7 @@ pipeline {
         stage("tfapply"){
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                    dir(TF_DIR){
+                    dir('frontend/fronted'){
                         sh "terraform init && terraform apply -auto-approve"
                     }
                 } 
