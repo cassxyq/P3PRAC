@@ -27,7 +27,7 @@ pipeline {
         stage("tfapply"){
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                    dir(TF_DIR){
+                    dir('terraform'){
                     //sh "./run.sh"
                     sh "terraform init && terraform plan"
                     }
