@@ -28,7 +28,7 @@ pipeline {
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                     dir(TF_DIR){
-                    sh "./run.sh"
+                    sh './run.sh'
                     //sh "terraform init && terraform plan"
                     }
                 } 
