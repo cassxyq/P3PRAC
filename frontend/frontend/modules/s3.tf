@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "hosting_bucket" {
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.domain_name
   acl    = "public-read"
-  policy = file("~/WorkSpace/P3project/P3_terraformAWS/terraform/frontend/modules/s3-policy.json")
+  policy = file("frontend/frontend/modules/s3-policy.json")
 
   website {
     redirect_all_requests_to = "https://${var.subdomain_name}"
