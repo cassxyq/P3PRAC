@@ -28,8 +28,7 @@ pipeline {
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                     dir(TF_DIR){
-                        sh 'terraorm init && terraform apply -auto-approve'
-                        /*sh "terraform init && terraform plan"*/
+                        sh "terraorm init && terraform apply -auto-approve"
                     }
                 } 
             }
