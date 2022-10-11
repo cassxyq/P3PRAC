@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "hosting_bucket" {
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.domain_name
   acl    = "public-read"
-  policy = file("s3-policy.json")
+  policy = file("${env.WORKSPACE}/frontend/frontend/modules/s3-policy.json")
 
   website {
     redirect_all_requests_to = "https://${var.subdomain_name}"
