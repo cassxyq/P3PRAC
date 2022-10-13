@@ -17,9 +17,12 @@ provider "aws" {
 }*/
 
 terraform {
-    backend "s3" {
-        bucket = "notfound404.click-tfbackend"
-        key = "test/terraform.tfstate"
-        region = "ap-southeast-2"
-    }
+  backend "s3" {
+    bucket = "notfound404.click-tfbackend"
+    key    = "test/terraform.tfstate"
+    region = "ap-southeast-2"
+
+    dynamodb_table = "terraform-state-lock-dynamo"
+    encrypt        = true
+  }
 }

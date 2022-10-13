@@ -5,6 +5,7 @@ pipeline {
         AWS_CRED = 'casstest'
         S3_BUCKET = 'test.notfound404.click'
         TF_DIR = "frontend/frontend"
+        WORKDIR = "./xxx"
     }
 
     stages {
@@ -15,7 +16,7 @@ pipeline {
                 git url: "https://github.com/teambit/react-demo-app.git" ,branch: "master"
             }
         }    
-        stage("build"){
+        stage("install & build"){
             steps{
                 script{
                   sh "cd ${env.WORKSPACE} && npm install && npm run build"
@@ -42,6 +43,12 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    post{
+        always{
+            cleanWs()
         }
     }
 }

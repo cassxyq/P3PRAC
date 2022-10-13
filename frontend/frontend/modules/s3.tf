@@ -27,7 +27,20 @@ resource "aws_s3_bucket_website_configuration" "hosting_bucket" {
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.domain_name
   acl    = "public-read"
-  policy = file("modules/s3-policy.json")
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "PublicReadGetObject",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::notfound404.click/*"
+      }
+    ]
+  }
+  POLICY
 
   /*website {
     redirect_all_requests_to = "https://${var.subdomain_name}"
