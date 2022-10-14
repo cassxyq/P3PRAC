@@ -1,3 +1,3 @@
 git add . 
 git commit -m"testchanges"
-git push origin main
+git push origin HEAD

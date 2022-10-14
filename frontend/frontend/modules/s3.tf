@@ -5,9 +5,21 @@ resource "aws_s3_bucket" "hosting_bucket" {
   
   object_lock_enabled = false
 
-  website {
+  /*website {
     index_document = "index.html"
     error_document = "error.html"
+  }*/
+}
+
+resource "aws_s3_bucket_website_configuration" "hosting_bucket" {
+  bucket = aws_s3_bucket.hosting_bucket.bucket
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
   }
 }
 
@@ -15,11 +27,29 @@ resource "aws_s3_bucket" "hosting_bucket" {
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.domain_name
   acl    = "public-read"
-  policy = file("modules/s3-policy.json")
-
-  website {
-    redirect_all_requests_to = "https://${var.subdomain_name}"
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "PublicReadGetObject",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::notfound404.click/*"
+      }
+    ]
   }
+  POLICY
+
+  /*website {
+    redirect_all_requests_to = "https://${var.subdomain_name}"
+  }*/
+}
+
+resource "aws_s3_bucket_website_configuration" "root" {
+  bucket = aws_s3_bucket.root_bucket.bucket
+  redirect_all_requests_to {host_name = var.subdomain_name}
 }
 
 # bloc public access
