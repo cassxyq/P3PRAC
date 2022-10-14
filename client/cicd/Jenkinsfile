@@ -59,7 +59,7 @@ pipeline {
         }
 
         stage("destroy"){
-            when {when {expression{return params.TFdestroy}}}
+            when {expression{return params.TFdestroy}}
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                     dir(TF_DIR){
