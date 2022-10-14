@@ -22,7 +22,7 @@ terraform {
     key    = "test/terraform.tfstate"
     region = "ap-southeast-2"
 
-    dynamodb_table = "terraform-state-lock-dynamo"
+    dynamodb_table = "tflock-test"
     encrypt        = true
   }
 }
