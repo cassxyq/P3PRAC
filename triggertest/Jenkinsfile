@@ -34,7 +34,7 @@ pipeline {
         booleanParam defaultValue: false, name: 'TFdestroy'
     }
 
-    options {
+    /*options {
         ansiColor('xterm')
     }*/
 
