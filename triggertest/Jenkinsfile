@@ -56,7 +56,7 @@ pipeline {
         stage("intall & build"){
             when {expression{return params.Dependencies}}
             steps{
-                dir(${env.WORKSPACE}){
+                dir(WORKDIR){
                     sh "npm install && npm run build"
                 }
             }
