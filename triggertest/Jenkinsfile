@@ -62,7 +62,7 @@ pipeline {
             }
         }*/
 
-        stage("tfapply"){
+        /*stage("tfapply"){
             //when {expression{return params.TFapply}}
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
@@ -71,7 +71,7 @@ pipeline {
                     }
                 } 
             }
-        }
+        }*/
 
         /*stage("upload"){
             when {expression{return params.Upload}}
@@ -84,6 +84,17 @@ pipeline {
                 }
             }
         }*/
+
+        stage("destroy"){
+            //when {when {expression{return params.TFdestroy}}}
+            steps{
+                withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
+                    dir(TF_DIR){
+                        sh "./destroy.sh"
+                    }
+                } 
+            }
+        }
     }
 
     post {
