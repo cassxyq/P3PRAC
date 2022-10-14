@@ -7,6 +7,9 @@ pipeline {
         booleanParam defaultValue: false, name: 'TFdestroy'
     }
 
+    options {
+        ansiColor('xterm')
+
     environment {
         AWS_CRED = 'casstest'
         S3_BUCKET = 'test.notfound404.click'
