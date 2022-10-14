@@ -27,7 +27,7 @@
 
 pipeline {
     agent any
-    parameters {
+    /*parameters {
         booleanParam defaultValue: false, name: 'TFapply'
         booleanParam defaultValue: false, name: 'Dependencies'
         booleanParam defaultValue: false, name: 'Upload'
@@ -36,7 +36,7 @@ pipeline {
 
     options {
         ansiColor('xterm')
-    }
+    }*/
 
     environment {
         AWS_CRED = 'casstest'
@@ -52,7 +52,7 @@ pipeline {
                 //git url: "https://github.com/Crazyorchid/cont8-test.git" ,branch: "main"
                 git url: "https://github.com/teambit/react-demo-app.git" ,branch: "master"
             }
-        } */
+        } 
         stage("intall & build"){
             when {expression{return params.Dependencies}}
             steps{
@@ -60,10 +60,10 @@ pipeline {
                     sh "npm install && npm run build"
                 }
             }
-        }
+        }*/
 
         stage("tfapply"){
-            when {expression{return params.TFapply}}
+            //when {expression{return params.TFapply}}
             steps{
                 withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                     dir(TF_DIR){
@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-        stage("upload"){
+        /*stage("upload"){
             when {expression{return params.Upload}}
             steps{
                 withAWS(credentials: AWS_CRED, region: 'ap-southeast-2'){
@@ -83,7 +83,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
     }
 
     post {
