@@ -4,11 +4,11 @@ pipeline {
     environment{
         CI = 'true'
     }
-    
+
     stages {
         stage('Hello') {
             steps {
-                echo 'Hello World'
+                echo 'Hello World 23456'
             }
         }
     }
