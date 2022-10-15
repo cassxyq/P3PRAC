@@ -9,7 +9,6 @@ pipeline {
         }
     }
 
-    stages {
         stage('test branch') {
             when {
                 branch 'test1'
@@ -18,9 +17,7 @@ pipeline {
                 echo 'Hello test1'
             }
         }
-    }
 
-    stages {
         stage('main branch') {
             when{
                 branch 'main'
@@ -29,7 +26,6 @@ pipeline {
                 echo 'MAIN BRANCH'
             }
         }
-    }
 
     post {
         always{
