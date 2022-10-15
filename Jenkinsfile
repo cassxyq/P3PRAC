@@ -7,7 +7,6 @@ pipeline {
                 echo 'Hello World 1'
             }
         }
-    }
 
         stage('test branch') {
             when {
@@ -26,7 +25,8 @@ pipeline {
                 echo 'MAIN BRANCH'
             }
         }
-
+    }
+    
     post {
         always{
             cleanWs()
