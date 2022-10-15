@@ -3,9 +3,9 @@ resource "aws_cloudfront_origin_access_identity" "hosting-oai" {
   comment = "OAI for hosting bucket"
 }
 
-/*resource "aws_cloudfront_origin_access_identity" "root-oai" {
+resource "aws_cloudfront_origin_access_identity" "root-oai" {
   comment = "OAI for root bucket"
-}*/
+}
 
 
 # cloudfront distribution for hosting s3
@@ -94,7 +94,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     response_code         = 200
     response_page_path    = "/error.html"
   }
-  
+
   price_class = "PriceClass_All"
 
   restrictions {
@@ -119,9 +119,9 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
     domain_name = aws_s3_bucket.root_bucket.bucket_regional_domain_name
     origin_id   = var.domain_name
 
-    /*s3_origin_config {
+    s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.root-oai.cloudfront_access_identity_path
-    }*/
+    }
 
   }
 

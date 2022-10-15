@@ -9,18 +9,40 @@ pipeline {
         }
     }
 
+    stages {
+        stage('test branch') {
+            when {
+                branch 'test1'
+            }
+            steps {
+                echo 'Hello test1'
+            }
+        }
+    }
+
+    stages {
+        stage('main branch') {
+            when{
+                branch 'main'
+            }
+            steps {
+                echo 'MAIN BRANCH'
+            }
+        }
+    }
+
     post {
         always{
             cleanWs()
         }
 
-        success{
+        /*success{
             emailext body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
         }
 
         failure{
             emailext body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
-        }
+        }*/
     
     }
 }

@@ -5,13 +5,13 @@ resource "aws_s3_bucket" "hosting_bucket" {
   
   object_lock_enabled = false
 
-  /*website {
+  website {
     index_document = "index.html"
     error_document = "error.html"
-  }*/
+  }
 }
 
-resource "aws_s3_bucket_website_configuration" "hosting_bucket" {
+/*resource "aws_s3_bucket_website_configuration" "hosting_bucket" {
   bucket = aws_s3_bucket.hosting_bucket.bucket
 
   index_document {
@@ -21,7 +21,7 @@ resource "aws_s3_bucket_website_configuration" "hosting_bucket" {
   error_document {
     key = "error.html"
   }
-}
+}*/
 
 # Setup s3 bucket for redirecting root to subdomain
 resource "aws_s3_bucket" "root_bucket" {
@@ -42,15 +42,15 @@ resource "aws_s3_bucket" "root_bucket" {
   }
   POLICY
 
-  /*website {
+  website {
     redirect_all_requests_to = "https://${var.subdomain_name}"
-  }*/
+  }
 }
 
-resource "aws_s3_bucket_website_configuration" "root" {
+/*resource "aws_s3_bucket_website_configuration" "root" {
   bucket = aws_s3_bucket.root_bucket.bucket
   redirect_all_requests_to {host_name = var.subdomain_name}
-}
+}*/
 
 # bloc public access
 resource "aws_s3_bucket_public_access_block" "subdomain" {
@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "s3_policy" {
   }
 }
 
-/*data "aws_iam_policy_document" "s3root_policy" {
+data "aws_iam_policy_document" "s3root_policy" {
   statement {
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.root_bucket.arn}/*"]
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "s3_policy" {
 resource "aws_s3_bucket_policy" "root" {
   bucket = aws_s3_bucket.root_bucket.id
   policy = data.aws_iam_policy_document.s3root_policy.json
-}*/
+}
 
 resource "aws_s3_bucket_policy" "hosting" {
   bucket = aws_s3_bucket.hosting_bucket.id
