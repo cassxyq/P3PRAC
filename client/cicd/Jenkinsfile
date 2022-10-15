@@ -14,7 +14,7 @@ pipeline {
     environment {
         AWS_CRED = 'casstest'
         S3_BUCKET = 'test.notfound404.click'
-        TF_DIR = "frontend/frontend"
+        TF_DIR = "./frontend/frontend"
         WORKDIR = "./client"
     }
 
