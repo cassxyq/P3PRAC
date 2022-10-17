@@ -4,3 +4,4 @@ variable "public_subnet_cidr" {
   description = "list of all public subnet cidr blocks"
 }
 variable "private_subnet_cidr" {}
+variable "prefix" {}
