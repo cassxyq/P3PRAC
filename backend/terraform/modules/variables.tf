@@ -5,3 +5,5 @@ variable "public_subnet_cidr" {
 }
 variable "private_subnet_cidr" {}
 variable "prefix" {}
+variable environment {}
+variable health_check_path {}
