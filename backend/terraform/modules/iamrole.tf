@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "${var.prefix}-ecsTaskExecutionRole"
+  name               = "${var.prefix}-ecsTaskExecutionRole"
   assume_role_policy = <<ROLEPOLICY
     {
     "Version": "2008-10-17",
@@ -15,7 +15,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
     ]
     }
     ROLEPOLICY
-    
+
 }
 
 resource "aws_iam_role_policy" "ecs_task_execution_role_policy" {

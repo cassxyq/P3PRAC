@@ -19,20 +19,20 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_alb_target_group" "app" {
-    name = "${var.prefix}-alb-tg"
-    port = 80 
-    protocol = "HTTP"
-    target_type = "ip"
-    vpc_id = aws_vpc.ecsprac-vpc.id
+  name        = "${var.prefix}-alb-tg"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.ecsprac-vpc.id
 
-    health_check {
-        healthy_threshold   = "3"
-        interval            = "30"
-        protocol            = "HTTP"
-        matcher             = "200"
-        timeout             = "3"
-        unhealthy_threshold = "2"
-        path                = "/health"
+  health_check {
+    healthy_threshold   = "3"
+    interval            = "30"
+    protocol            = "HTTP"
+    matcher             = "200"
+    timeout             = "3"
+    unhealthy_threshold = "2"
+    path                = "/health"
   }
 }
 
@@ -63,4 +63,4 @@ resource "aws_lb_listener" "https" {
 /*resource "aws_lb_listener_certificate" "example" {
   listener_arn    = aws_lb_listener.https.arn
   certificate_arn = aws_acm_certificate.cert.arn
-}+/
+}*/

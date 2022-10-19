@@ -1,6 +1,6 @@
 data "aws_route53_zone" "selected" {
   #name         = "notfound404.click" use id instead of name to avoid no match
-  zone_id = var.hostzone_id
+  zone_id      = var.hostzone_id
   private_zone = true
 }
 
