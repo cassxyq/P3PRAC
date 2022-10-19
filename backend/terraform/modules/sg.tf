@@ -9,6 +9,7 @@ resource "aws_security_group" "lb-sg" {
         from_port = 80
         to_port = 80
         cidr_blocks = ["0.0.0.0/0"]
+        ipv6_cidr_blocks = ["::/0"]
     }
 
     /*ingress {
@@ -24,10 +25,11 @@ resource "aws_security_group" "lb-sg" {
         from_port = 0
         to_port = 0
         cidr_blocks = ["0.0.0.0/0"]
+        ipv6_cidr_blocks = ["::/0"]
     }
-    tags {
+    /*tags {
         Name = "alb-sg"
-    }
+    }*/
 }
 
 resource "aws_security_group" "service-sg" {
@@ -36,8 +38,8 @@ resource "aws_security_group" "service-sg" {
 
     ingress {
         protocol = "tcp"
-        from_port = var.app_port
-        to_port = var.app_port
+        from_port = 0
+        to_port = 65535
         security_groups = [aws_security_group.lb-sg.id]
     }
 
@@ -46,5 +48,6 @@ resource "aws_security_group" "service-sg" {
         from_port = 0
         to_port = 0
         cidr_blocks = ["0.0.0.0/0"]
+        ipv6_cidr_blocks = ["::/0"]
     }
 }

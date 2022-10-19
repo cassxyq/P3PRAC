@@ -7,3 +7,9 @@ variable "private_subnet_cidr" {}
 variable "prefix" {}
 variable environment {}
 variable health_check_path {}
+variable domain_name {}
+variable aws_region {}
+variable hostzone_id {}
+variable app_count {}
+variable image_url {}
+variable app_port {}

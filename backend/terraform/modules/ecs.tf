@@ -29,7 +29,7 @@ resource "aws_ecs_service" "test" {
     launch_type = "FARGATE"
     deployment_maximum_percent = 200
     deployment_minimum_healthy_percent = 100
-    health_check_grace_period_seconds = 60
+    health_check_grace_period_seconds = 30
 
     load_balancer {
         target_group_arn = aws_alb_target_group.app.arn
@@ -40,7 +40,7 @@ resource "aws_ecs_service" "test" {
     network_configuration {
         security_groups = [aws_security_group.service-sg.id]
         subnets = aws_subnet.ecsprac-private[count.index].id
-        //assign_public_ip = true
+        assign_public_ip = true
     }
 
     depends_on [aws_iam_role.ecs_task_execution_role]
