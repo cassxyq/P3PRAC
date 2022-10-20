@@ -11,7 +11,7 @@ pipeline {
         AWS_REGION = "ap-southeast-2"
         AWS_ACCOUNTID = "327746137438"
         IMAGE_NAME = "PRAC"
-        IMAGE_TAG = "${GIT_COMMIT}" //"${GIT_COMMIT_MSG}""
+        IMAGE_TAG = "1"//"${GIT_COMMIT}" //"${GIT_COMMIT_MSG}""
         ECR_REPO_NAME = "PRAC"
         ECR_PREFIX_URL = "${AWS_ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        stage("UpdateTaskDefinition"){
+        /*stage("UpdateTaskDefinition"){
             steps {
                 dir(WORKDIR){
                     withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
@@ -65,7 +65,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
     }
 
@@ -78,7 +78,7 @@ pipeline {
             cleanWs()
         }
 
-        success{
+        /*success{
             emailext body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
         }
 
@@ -86,5 +86,5 @@ pipeline {
             emailext body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
         }
     
-    }
+    }*/
 }
