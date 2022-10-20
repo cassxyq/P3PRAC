@@ -10,9 +10,9 @@ pipeline {
         WORKDIR = "./backend/containertest"
         AWS_REGION = "ap-southeast-2"
         AWS_ACCOUNTID = "327746137438"
-        IMAGE_NAME = "PRAC"
+        IMAGE_NAME = "prac"
         IMAGE_TAG = "1"//"${GIT_COMMIT}" //"${GIT_COMMIT_MSG}""
-        ECR_REPO_NAME = "PRAC"
+        ECR_REPO_NAME = "prac"
         ECR_PREFIX_URL = "${AWS_ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
 
