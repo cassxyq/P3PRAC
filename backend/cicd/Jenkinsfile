@@ -58,7 +58,7 @@ pipeline {
             steps {
                 dir(WORKDIR){
                     withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                        sh "docker push ${IMAGE_URL}"
+                        sh "docker push ${IMAGE_URI}"
                     }
                 }
             }
