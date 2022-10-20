@@ -52,7 +52,9 @@ pipeline {
         stage("PushImage"){
             steps {
                 dir(WORKDIR){
-                    sh "docker push ${ECR_PREFIX_URL}/${ECR_REPO_NAME}:${IMAGE_TAG}"
+                    withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
+                        sh "docker push ${ECR_PREFIX_URL}/${ECR_REPO_NAME}:${IMAGE_TAG}"
+                    }
                 }
             }
         }
