@@ -66,7 +66,7 @@ pipeline {
 
         stage("DeployToECS"){
             steps{
-                dir(./backend/cicd){
+                dir("./backend/cicd"){
                     withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                         sh "./update.sh"
                     }
