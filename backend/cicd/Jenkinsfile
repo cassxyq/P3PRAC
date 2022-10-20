@@ -11,19 +11,19 @@ pipeline {
         AWS_REGION = "ap-southeast-2"
         AWS_ACCOUNTID = "327746137438"
         IMAGE_NAME = "prac"
-        IMAGE_TAG = "${GIT_COMMIT}" //"${GIT_COMMIT_MSG}""
+        IMAGE_TAG = "${GIT_COMMIT_MSG}" //"${GIT_COMMIT}" 
         ECR_REPO_NAME = "ecsprac"
         ECR_PREFIX_URL = "${AWS_ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
 
     stages {
-        /*stage("GitCommitExtract"){
+        stage("GitCommitExtract"){
             steps {
                 script{
                     env.GIT_COMMIT_MSG = sh (script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                 }
             }
-        }*/
+        }
 
         stage("LoginECR"){
             steps {
