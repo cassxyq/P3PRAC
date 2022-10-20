@@ -3,9 +3,10 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb-sg.id]
-  subnets            = aws_subnet.ecsprac-public[1].id
+  subnets            = aws_subnet.ecsprac-public.*.id
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
+
 
   /*access_logs {
     bucket  = aws_s3_bucket.lb_logs.bucket
@@ -18,7 +19,7 @@ resource "aws_lb" "alb" {
   }*/
 }
 
-resource "aws_alb_target_group" "app" {
+resource "aws_lb_target_group" "app" {
   name        = "${var.prefix}-alb-tg"
   port        = 80
   protocol    = "HTTP"
@@ -57,6 +58,21 @@ resource "aws_lb_listener" "https" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app.arn
+  }
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "redirect"
+     redirect {
+      port = "443"
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
+     }
   }
 }
 
