@@ -12,21 +12,7 @@
                     "containerPort": 3000,
                     "hostPort": 3000
                 }
-            ]/*,
-            "environment": [
-                {
-                    "name": "BW_LOGLEVEL",
-                    "value": "DEBUG"
-                }
-            ],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "bwce-app-log",
-                    "awslogs-region": "<region_name>",
-                    "awslogs-stream-prefix": "bwce"
-                }
-	    }*/
+            ]
         }
     ]
 }
