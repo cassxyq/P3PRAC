@@ -68,27 +68,43 @@ pipeline {
             }
         }
 
-        stage("DeployToECS"){
+        stage("UpdateTD"){
             steps{
                 dir(WORKDIR){
                     withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
                         sh "aws ecs register-task-definition --family ${TASK_DEFINITION} --cli-input-json file://taskdef.json --region ${AWS_REGION}"
-                        sh "REVISION = 'aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision'"
-                        sh "aws ecs update-service --cluster ${ECS_CLUSTER} --region ${AWS_REGION} --service ${ECS_SERVICE}  --task-definition ${TASK_DEFINITION}:${REVISION} --desired-count ${DESIRED_COUNT}"
+                        //sh "REVISION = 'aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision'"
+                        //sh "aws ecs update-service --cluster ${ECS_CLUSTER} --region ${AWS_REGION} --service ${ECS_SERVICE}  --task-definition ${TASK_DEFINITION}:${REVISION} --desired-count ${DESIRED_COUNT}"
                     }
                 }
             }
         }
 
-        /*stage("UpdateTaskDefinition"){
-            steps {
+        stage("FetchRevision"){
+            steps{
                 dir(WORKDIR){
                     withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                        sh ""
+                        steps{
+                        //sh "aws ecs register-task-definition --family ${TASK_DEFINITION} --cli-input-json file://taskdef.json --region ${AWS_REGION}"
+                        env.REVISION = "aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision"
+                        //sh "aws ecs update-service --cluster ${ECS_CLUSTER} --region ${AWS_REGION} --service ${ECS_SERVICE}  --task-definition ${TASK_DEFINITION}:${REVISION} --desired-count ${DESIRED_COUNT}"
+                        }
                     }
                 }
             }
-        }*/
+        }
+
+        stage("UpdateService"){
+            steps{
+                dir(WORKDIR){
+                    withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
+                        //sh "aws ecs register-task-definition --family ${TASK_DEFINITION} --cli-input-json file://taskdef.json --region ${AWS_REGION}"
+                        //sh "REVISION = 'aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision'"
+                        sh "aws ecs update-service --cluster ${ECS_CLUSTER} --region ${AWS_REGION} --service ${ECS_SERVICE}  --task-definition ${TASK_DEFINITION}:${REVISION} --desired-count ${DESIRED_COUNT}"
+                    }
+                }
+            }
+        }
 
     }
 
