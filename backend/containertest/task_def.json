@@ -1,0 +1,32 @@
+{
+    "family": "ecsprac-td",
+    "containerDefinitions": [
+        {
+            "image": "327746137438.dkr.ecr.ap-southeast-2.amazonaws.com/ecsprac:latest",
+            "name": "pracapp",
+            "cpu": 256,
+            "memory": 512,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 3000
+                }
+            ]/*,
+            "environment": [
+                {
+                    "name": "BW_LOGLEVEL",
+                    "value": "DEBUG"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "bwce-app-log",
+                    "awslogs-region": "<region_name>",
+                    "awslogs-stream-prefix": "bwce"
+                }
+	    }*/
+        }
+    ]
+}
