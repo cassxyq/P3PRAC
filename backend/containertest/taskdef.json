@@ -1,5 +1,6 @@
 {
     "family": "ecsprac-td",
+    "networkMode": "awsvpc", 
     "containerDefinitions": [
         {
             "image": "327746137438.dkr.ecr.ap-southeast-2.amazonaws.com/ecsprac:latest",
