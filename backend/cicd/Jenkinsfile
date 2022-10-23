@@ -95,7 +95,7 @@ pipeline {
                             sh "aws ecs update-service --cluster ${ECS_CLUSTER} \
                                     --region ${AWS_REGION} \
                                     --service ${ECS_SERVICE} \
-                                    --task-definition ${taskDefinitionArn} \
+                                    --task-definition ${TASK_DEFINITION}:${REVISION} \
                                     --desired-count ${DESIRED_COUNT}" 
                         }
                     }
