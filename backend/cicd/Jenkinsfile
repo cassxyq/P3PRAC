@@ -12,7 +12,8 @@ pipeline {
         AWS_ACCOUNTID = "327746137438"
         IMAGE_NAME = "prac"
         //IMAGE_TAG =  "${GIT_COMMIT_MSG}" 
-        IMAGE_TAG = "${GIT_COMMIT[0..5]}"
+        IMAGE_TAG = "latest"
+        //IMAGE_TAG = "${GIT_COMMIT[0..5]}"
         ECR_REPO_NAME = "ecsprac"
         ECR_PREFIX_URL = "${AWS_ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         IMAGE_URI = "${AWS_ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}"
@@ -85,7 +86,7 @@ pipeline {
                         script{
                             //sh "sed -i 's/\"image\":[^,]*/\"image\":\"${IMAGE_URI}\"/' taskdef.json"
                             //sh "sed -n '/REPLACE/p' taskdef.json | sed 's/REPLACE/${IMAGE_URI}/g'"
-                            sh "sed -i 's/REPLACE/${IMAGE_URI}/g' taskdef.json"
+                            //sh "sed -i 's/REPLACE/${IMAGE_URI}/g' taskdef.json"
                             sh "aws ecs register-task-definition --family ${TASK_DEFINITION} --cli-input-json file://taskdef.json --region ${AWS_REGION}"
                             env.REVISION = sh(script: "aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision", returnStdout: true).trim()
                             sh "aws ecs update-service --cluster ${ECS_CLUSTER} --region ${AWS_REGION} --service ${ECS_SERVICE}  --task-definition ${TASK_DEFINITION}:${REVISION} --desired-count ${DESIRED_COUNT}" 
