@@ -94,8 +94,8 @@ pipeline {
                             env.REVISION = sh(script: "aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision", returnStdout: true).trim()
                             sh "aws ecs update-service --cluster ${ECS_CLUSTER} \
                                     --region ${AWS_REGION} \
-                                    --service ${ECS_SERVICE}  \
-                                    --task-definition ${TASK_DEFINITION}:${REVISION} \
+                                    --service ${ECS_SERVICE} \
+                                    --task-definition ${taskDefinitionArn} \
                                     --desired-count ${DESIRED_COUNT}" 
                         }
                     }
