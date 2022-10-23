@@ -3,8 +3,8 @@
     "networkMode": "awsvpc", 
     "containerDefinitions": [
         {
-            "image": "327746137438.dkr.ecr.ap-southeast-2.amazonaws.com/ecsprac:latest",
-            "name": "pracapp",
+            "image": "REPLACE",
+            "name": "ecsprac-pracapp",
             "essential": true,
             "portMappings": [
                 {

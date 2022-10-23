@@ -10,10 +10,10 @@ resource "aws_ecs_task_definition" "test" {
   memory                   = 512
   container_definitions = jsonencode([
     {
-      name      = "${var.prefix}-container-td"
-      image     = var.image_url
-      cpu       = 256
-      memory    = 512
+      name  = "${var.prefix}-pracapp"
+      image = var.image_url
+      //cpu       = 256
+      //memory    = 512
       essential = true
       portMappings = [
         {
@@ -57,7 +57,7 @@ resource "aws_ecs_service" "test" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.app.arn
-    container_name   = "${var.prefix}-container-td" #same as the container name in container definition
+    container_name   = "${var.prefix}-pracapp" #same as the container name in container definition
     container_port   = var.app_port
   }
 
