@@ -30,7 +30,7 @@ pipeline {
                 script{
                     //env.GIT_COMMIT_MSG = sh (script: 'git rev-parse --short HEAD', returnStdout: true).trim()
 
-                    env.GIT_COMMIT_MSG = sh (script: 'git rev-parse --short HEAD | cut -c 1-5')
+                    env.GIT_COMMIT_MSG = sh (script: 'git rev-parse --short HEAD | cut -c 1-5', returnStdout: true).trim()
                 }
             }
         }*/
@@ -69,17 +69,7 @@ pipeline {
             }
         }
 
-        /*stage("UpdateTD"){
-            steps{
-                dir(WORKDIR){
-                    withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                        sh "aws ecs register-task-definition --family ${TASK_DEFINITION} --cli-input-json file://taskdef.json --region ${AWS_REGION}"
-                    }
-                }
-            }
-        }*/
-
-        stage("FetchRevision"){
+        stage("Update"){
             steps{
                 dir(WORKDIR){
                     withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
@@ -111,17 +101,6 @@ pipeline {
                 }
             }
         }
-
-        /*stage("UpdateService"){
-            steps{
-                dir(WORKDIR){
-                    withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                        sh "aws ecs update-service --cluster ${ECS_CLUSTER} --region ${AWS_REGION} --service ${ECS_SERVICE}  --task-definition ${TASK_DEFINITION}:${REVISION} --desired-count ${DESIRED_COUNT}"
-                    }
-                }
-            }
-        }*/
-
     }
 
 
