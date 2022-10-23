@@ -103,6 +103,15 @@ pipeline {
             }
         }
 
+        stage("clean"){
+            steps{
+                dir(WORKDIR){
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker container prune -f"
+                }
+            }
+        }
+
         /*stage("UpdateService"){
             steps{
                 dir(WORKDIR){
