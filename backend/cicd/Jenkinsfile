@@ -76,7 +76,7 @@ pipeline {
                         script{
                             //sh "sed -i 's/\"image\":[^,]*/\"image\":\"${IMAGE_URI}\"/' taskdef.json"
                             //sh "sed -n '/REPLACE/p' taskdef.json | sed 's/REPLACE/${IMAGE_URI}/g'"
-                            sh "sed -i -e 's/REPLACE/${IMAGE_URI}/g' taskdef.json"
+                            sh "sed -i -e 's#REPLACE#${IMAGE_URI}#' taskdef.json"
 
                             sh "aws ecs register-task-definition --family ${TASK_DEFINITION} \
                                     --cli-input-json file://taskdef.json \
