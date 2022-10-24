@@ -76,13 +76,15 @@ pipeline {
                         script{
                             //sh "sed -i 's/\"image\":[^,]*/\"image\":\"${IMAGE_URI}\"/' taskdef.json"
                             //sh "sed -n '/REPLACE/p' taskdef.json | sed 's/REPLACE/${IMAGE_URI}/g'"
-                            sh 'sed -i "s/REPLACE/${IMAGE_URI}/g" taskdef.json'
+                            sh "sed -i -e 's/REPLACE/${IMAGE_URI}/g' taskdef.json"
 
                             sh "aws ecs register-task-definition --family ${TASK_DEFINITION} \
                                     --cli-input-json file://taskdef.json \
                                     --requires-compatibilities 'FARGATE' \
                                     --region ${AWS_REGION}"
+
                             env.REVISION = sh(script: "aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq .taskDefinition.revision", returnStdout: true).trim()
+
                             sh "aws ecs update-service --cluster ${ECS_CLUSTER} \
                                     --region ${AWS_REGION} \
                                     --service ${ECS_SERVICE} \
