@@ -3,8 +3,7 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb-sg.id]
-  subnets            = aws_subnet.ecsprac-public.*.id
-
+  subnets            = var.public_subnet_id
   enable_deletion_protection = false
 
 
@@ -19,12 +18,55 @@ resource "aws_lb" "alb" {
   }*/
 }
 
+resource "aws_security_group" "lb-sg" {
+  name        = "alb_sg"
+  description = "Allow inbound traffic to ALB"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description      = "traffic from anywhere"
+    protocol         = "tcp"
+    from_port        = 80
+    to_port          = 80
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "traffic from https"
+    protocol         = "tcp"
+    from_port        = 443
+    to_port          = 443
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  /*ingress {
+        description = "app port"
+        from_port = var.app_port
+        to_port = var.app_port
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }*/
+
+  egress {
+    protocol         = "-1"
+    from_port        = 0
+    to_port          = 0
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  /*tags {
+        Name = "alb-sg"
+    }*/
+}
+
 resource "aws_lb_target_group" "app" {
   name        = "${var.prefix}-alb-tg"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = aws_vpc.ecsprac-vpc.id
+  vpc_id      = var.vpc_id
 
   health_check {
     healthy_threshold   = "3"

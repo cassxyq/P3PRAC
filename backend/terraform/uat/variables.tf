@@ -12,3 +12,7 @@ variable "hostzone_id" {}
 variable "app_count" {}
 variable "image_url" {}
 variable "app_port" {}
+
+/*variable private_subnet_id {}
+variable vpc_id {}
+variable alb_tg_arn {}*/
