@@ -1,3 +1,4 @@
+# service security group
 resource "aws_security_group" "service-sg" {
   name   = "service-sg"
   vpc_id = var.vpc_id
@@ -18,6 +19,7 @@ resource "aws_security_group" "service-sg" {
   }
 }
 
+# create ecs service
 resource "aws_ecs_service" "test" {
   name                               = "${var.prefix}-service"
   cluster                            = aws_ecs_cluster.prac.id

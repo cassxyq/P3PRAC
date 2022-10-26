@@ -49,7 +49,7 @@ resource "aws_iam_role_policy" "ecs_task_execution_role_policy" {
 }*/
 
 #ecs autoscaling role and permissions
-/*resource "aws_iam_role" "ecs_autoscaling_role" {
+resource "aws_iam_role" "ecs_autoscaling_role" {
   name               = "${var.prefix}-ecsAutoscalingRole"
   assume_role_policy = <<ROLEPOLICY
 {
@@ -66,6 +66,7 @@ resource "aws_iam_role_policy" "ecs_task_execution_role_policy" {
     ]
 }
 ROLEPOLICY
+}
 
 resource "aws_iam_role_policy" "ecs_autoscaling_role_policy" {
   name = "ecsautoscaling_policy"
@@ -96,5 +97,5 @@ resource "aws_iam_role_policy" "ecs_autoscaling_role_policy" {
             ]
         }
     ]
+  })
 }
-  )*/

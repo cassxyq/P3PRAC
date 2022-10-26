@@ -1,4 +1,4 @@
-/*#autoscaling
+#autoscaling
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 4
   min_capacity       = 1
@@ -8,7 +8,7 @@ resource "aws_appautoscaling_target" "ecs_target" {
   role_arn = aws_iam_role.ecs_autoscaling_role.arn
 }
 
-resource "aws_appautoscaling_policy" "sclae_up"{
+resource "aws_appautoscaling_policy" "scale_up"{
   name = "${var.prefix}-scale-up"
   policy_type = "StepScaling"
   resource_id = aws_appautoscaling_target.ecs_target.resource_id
@@ -27,7 +27,7 @@ resource "aws_appautoscaling_policy" "sclae_up"{
   }
 }
 
-resource "aws_appautoscaling_policy" "sclae_down"{
+resource "aws_appautoscaling_policy" "scale_down"{
   name = "${var.prefix}-scale-down"
   policy_type = "StepScaling"
   resource_id = aws_appautoscaling_target.ecs_target.resource_id
@@ -44,4 +44,4 @@ resource "aws_appautoscaling_policy" "sclae_down"{
       scaling_adjustment          = -1
     }
   }
-}*/
+}

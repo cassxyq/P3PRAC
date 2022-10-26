@@ -7,16 +7,19 @@ module "network" {
   prefix              = var.prefix
 }
 
-module "ecs" {
-  source            = "./modules/ecs"
+module "ecs-cluster" {
+  source = "./modules/ecs-cluster"
+}
+
+module "ecs-service" {
+  source            = "./modules/ecs-service"
   prefix            = var.prefix
-  image_url         = var.image_url
   app_port          = var.app_port
   app_count         = var.app_count
   vpc_id            = module.network.vpc.id
   private_subnet_id = module.network.private-subnets
-  alb_tg_arn        = module.alb.alb-tg.arn
-  alb_sg_id         = module.alb.alb-sg
+  alb_tg_arn        = module.alb.alb-tg.arn # check out the outputs in modules
+  alb_sg_id         = module.alb.alb-sg     #to see the difference
 }
 
 module "alb" {
