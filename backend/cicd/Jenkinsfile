@@ -42,12 +42,14 @@ pipeline {
                   scannerHome = tool 'sonarscanner'
             }
             withSonarQubeEnv('SonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner \ 
-                    -Dsonar.projectKey=casstest \
-                    -Dsonar.projectName=casstest  \
-                    -Dsonar.sourceEncoding=UTF-8 \
-                    -Dsonar.java.binaries=. \
-                    -Dsonar.sources=./backend/containertest"
+                    sh '''
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=casstest \
+                        -Dsonar.projectName=casstest  \
+                        -Dsonar.sourceEncoding=UTF-8 \
+                        -Dsonar.java.binaries=. \
+                        -Dsonar.sources=./backend/containertest
+                        '''
             }
             sleep(10)
             // 这个睡眠时为了防止没有分析完成就去请求结果
