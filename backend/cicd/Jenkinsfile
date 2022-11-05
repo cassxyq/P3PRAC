@@ -42,7 +42,7 @@ pipeline {
             }
             steps{
                 withSonarQubeEnv('SonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner --vrsion"
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             
                 sleep(10)
