@@ -131,7 +131,11 @@ resource "aws_instance" "myprac-server" {
   }
 }
 
-resource "aws_eip" "ec2" {
-  instance = aws_instance.myprac-server.id
-  vpc      = true
+data "aws_eip" "by_public_ip" {
+  public_ip = "3.105.102.108"
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.myprac-server.id
+  allocation_id = data.aws_eip.by_public_ip.id
 }
