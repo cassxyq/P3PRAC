@@ -35,24 +35,23 @@ pipeline {
             }
         }*/
 
-        stage('code scanning'){
-            environment {
+    stage('SonarQube analysis'){
+        environment {
+                // requires SonarQube Scanner 2.8+
                 scannerHome = tool 'sonarscanner'
+        }
+        steps{
+            withSonarQubeEnv('SonarQube') {
+                    sh "${scannerHome}/bin/sonar-scanner --vrsion"
             }
-            steps {
-                withSonarQubeEnv('sq'){
-                        echo 'Start Scanning...'
-                        sh '${scannerHome}/bin/sonar-scanner'
-                }
-            }
-            sleep(10)
+        }
+        sleep(10)
             // 这个睡眠时为了防止没有分析完成就去请求结果
-            timeout(time: 5, unit: 'MINUTES') {
-                script {
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to a quality gate failure: ${qg.status}"
-                    }
+        timeout(time: 5, unit: 'MINUTES') {
+            script {
+                def qg = waitForQualityGate()
+                if (qg.status != 'OK') {
+                    error "Pipeline aborted due to a quality gate failure: ${qg.status}"
                 }
             }
         }
