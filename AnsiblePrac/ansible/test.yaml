@@ -1,0 +1,77 @@
+---
+- hosts: AWS
+  become: true
+  become_user: root
+  remote_user: ubuntu
+
+  vars_files:
+    - vars.yaml
+
+  tasks:
+    - name: install OpenJDK11
+      become: yes
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+
+    - name: Add the PostgreSQL signing key
+      become: yes
+      ansible.builtin.apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state: present
+
+    - name: Add the PostgreSQL repository
+      become: yes
+      ansible.builtin.apt_repository:
+        repo: "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main"
+        state: present
+
+    # - name: Add the PostgreSQL repository
+    #   ansible.builtin.shell: sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+
+    # - name: Add the PostgreSQL signing key
+    #   shell: wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+
+    - name: install PostgreSQL
+      become: yes
+      ansible.builtin.apt:
+        name: postgresql, postgresql-contrib
+      #shell: sudo apt install postgresql postgresql-contrib -y
+
+    - name: "Start and enable services"
+      become: yes
+      service: "state=started enabled=yes"
+      with_items:
+        - postgresql
+
+    - name: "Create app database"
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+
+    - name: "Create db user"
+      postgresql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+      become: yes
+      become_user: postgres
+
+    - name: Change the owner to sonar
+      become: yes
+      postgresql_owner:
+        db: "{{ db_name }}"
+        new_owner: "{{ db_user }}"
+
+    - name: "Grant db user access to app db"
+      postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+      become: yes
+      become_user: postgres

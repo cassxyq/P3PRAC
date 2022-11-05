@@ -1,0 +1,3 @@
+db_user: sonar
+db_password: zxcvbn000
+db_name: sonarqube

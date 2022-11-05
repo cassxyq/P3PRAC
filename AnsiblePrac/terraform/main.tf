@@ -130,3 +130,8 @@ resource "aws_instance" "myprac-server" {
     Project = "prac"
   }
 }
+
+resource "aws_eip" "ec2" {
+  instance = aws_instance.myprac-server.id
+  vpc      = true
+}
