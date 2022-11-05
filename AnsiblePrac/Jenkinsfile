@@ -14,16 +14,16 @@ pipeline {
     stages {
         stage("TF"){
             steps {
-                dir("./terraform/")
-                withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
-                    sh "./run.sh"
+                dir("./terraform")
+                withAWS(credentials: AWS_CRED, region: AWS_REGION){
+                    sh './run.sh'
                 }
             }
         }
 
         stage("ansible"){
             steps {
-                dir("./ansible/"){
+                dir("./ansible"){
                     sh '''
                         eval `ssh-agent -s` 
                         ssh-add
