@@ -35,14 +35,15 @@ pipeline {
             }
         }*/
 
-    stage('SonarQube analysis'){
-        steps {
-            script {
-                  // requires SonarQube Scanner 2.8+
-                  scannerHome = tool 'sonarscanner'
+        stage('code scanning'){
+            environment {
+                scannerHome = tool 'sonarscanner'
             }
-            withSonarQubeEnv('SonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner --vrsion"
+            steps {
+                withSonarQubeEnv('sq'){
+                        echo 'Start Scanning...'
+                        sh '${scannerHome}/bin/sonar-scanner'
+                }
             }
             sleep(10)
             // 这个睡眠时为了防止没有分析完成就去请求结果
