@@ -12,14 +12,14 @@ pipeline {
     }
 
     stages {
-        stage("TF"){
+        /*stage("TF"){
             steps {
                 dir("./terraform")
                 withAWS(credentials: AWS_CRED, region: AWS_REGION){
                     sh './run.sh'
                 }
             }
-        }
+        }*/
 
         stage("ansible"){
             steps {
