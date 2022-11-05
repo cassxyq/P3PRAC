@@ -88,3 +88,30 @@
         privs: all
       become: yes
       become_user: postgres
+
+    - name: install zip
+      ansible.builtin.apt:
+        name: zip
+        state: present
+        update_cache: yes
+
+    - name: sonarqube dir
+      become: yes
+      ansible.builtin.file:
+        path: /opt/sonarqube
+        state: directory
+        mode: '0755'
+
+    - name: download sonarqube
+      become: yes
+      ansible.builtin.get_url:
+        url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonar_version }}.zip
+        dest: /opt/sonarqube
+        mode: '0755'
+
+    - name: unzip file
+      become: yes
+      ansible.builtin.unarchive:
+        src: /opt/sonarqube/sonarqube-{{ sonar_version }}.zip
+        dest: /opt/sonarqube
+        remote_src: yes
