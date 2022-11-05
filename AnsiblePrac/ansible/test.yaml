@@ -12,15 +12,13 @@
       ansible.builtin.apt: 
         name: python3-pip 
         state: present 
+        update_cache: yes
 
     - name: "Install Python packages"
       become: yes
       ansible.builtin.pip:
         name: psycopg2-binary
         state: present
-      # vars:
-      #   ansible_python_interpreter: /usr/bin/python3.8
-
 
   tasks:
     - name: install OpenJDK11
@@ -47,27 +45,10 @@
       ansible.builtin.shell: 
         sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
 
-    # - name: Add the PostgreSQL signing key
-    #   shell: wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
-
     - name: install PostgreSQL
       become: yes
       ansible.builtin.apt:
         name: postgresql, postgresql-contrib
-      #shell: sudo apt install postgresql postgresql-contrib -y
-
-    # - name: "Start and enable services"
-    #   become: yes
-    #   ansible.builtin.shell:
-    #     systemctl enable postgresql
-    #   # service: "state=started enabled=yes"
-    #   # with_items:
-    #   #   - postgresql
-
-    # - name: "Start and enable services1"
-    #   become: yes
-    #   ansible.builtin.shell:
-    #     systemctl start postgresql
 
     - name: Enable and Start PostgreSQL
       ansible.builtin.service:
@@ -77,8 +58,6 @@
       become: yes
 
     - name: "Create app database"
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
       postgresql_db:
         state: present
         name: "{{ db_name }}"
