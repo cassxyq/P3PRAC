@@ -12,23 +12,26 @@ pipeline {
     }
 
     stages {
-        /*stage("TF"){
+        stage("TF"){
             steps {
                 dir("./terraform")
                 withAWS(credentials: AWS_CRED, region: AWS_REGION){
-                    sh './run.sh'
+                    sh '''
+                        terraform init
+                        terraform fmt
+                        terraform apply -auto-approve
+                    '''
                 }
             }
-        }*/
+        }
 
         stage("ansible"){
             steps {
                 dir("./ansible"){
                     sh '''
                         eval `ssh-agent -s` 
-                        ssh-add
                         ssh-add ~/.ssh/0906-tfprac-key-pair.pem
-                        '''
+                    '''
                 }
             }
         }
