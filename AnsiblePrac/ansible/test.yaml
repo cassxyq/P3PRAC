@@ -89,6 +89,27 @@
       become: yes
       become_user: postgres
 
+    - name: Modify Kernel System Limits
+      ansible.builtin.blockinfile:
+        path: /etc/sysctl.conf
+        block: |
+          vm.max_map_count=524288
+          fs.file-max=131072
+          ulimit -n 131072
+          ulimit -u 8192 
+
+    - name: Add entries in /etc/security/limits.conf
+      ansible.builtin.blockinfile:
+        path: /etc/security/limits.conf
+        block: |
+          sonarqube   -   nofile   131072
+          sonarqube   -   nproc    8192
+
+    - name: reboot system
+      ansible.builtin.reboot:
+
+    #CONFIGURE SONARQUBE
+
     - name: install zip
       ansible.builtin.apt:
         name: zip
@@ -121,24 +142,32 @@
         name: "{{ group }}"
         state: present
 
-    - name: add user to group
-      become: yes
-      ansible.builtin.user:
-        name: "{{ user }}"
-        shell: /bin/bash
-        groups: "{{ group }}"
-        append: yes
-        # home: "{{ home_dir }}"
-        home: /opt/sonarqube/sonarqube-8.9.10.61524
+    # - name: add user to group
+    #   become: yes
+    #   ansible.builtin.user:
+    #     name: "{{ user }}"
+    #     shell: /bin/bash
+    #     groups: "{{ group }}"
+    #     append: yes
+    #     # home: "{{ home_dir }}"
+    #     home: /opt/sonarqube/sonarqube-8.9.10.61524
+
+    - name: add user to group 
+      ansible.builtin.shell:
+        sudo useradd -d /opt/sonarqube/sonarqube-8.9.10.61524 -g sonar sonar
 
     - name: grant sonar user to access home dir
-      become: yes
-      ansible.builtin.file:
-        path: /opt/sonarqube/sonarqube-8.9.10.61524
-        # path: "{{ home_dir }}"
-        state: directory
-        owner: "{{ user }}"
-        group: "{{ group }}"
+      ansible.builtin.shell:
+        sudo chown sonar:sonar /opt/sonarqube/sonarqube-8.9.10.61524 -R
+
+    # - name: grant sonar user to access home dir
+    #   become: yes
+    #   ansible.builtin.file:
+    #     path: /opt/sonarqube/sonarqube-8.9.10.61524
+    #     # path: "{{ home_dir }}"
+    #     state: directory
+    #     owner: "{{ user }}"
+    #     group: "{{ group }}"
 
     # - name: grant sonar user to access home dir
     #   become: yes
@@ -184,17 +213,9 @@
         src: sonar.service
         dest: /etc/systemd/system/sonar.service
 
-    - name: Modify Kernel System Limits
-      ansible.builtin.blockinfile:
-        path: /etc/sysctl.conf
-        block: |
-          vm.max_map_count=524288
-          fs.file-max=131072
-          ulimit -n 131072
-          ulimit -u 8192   
-
-    - name: reboot system
-      ansible.builtin.reboot:
+    - name: reload daemon
+      ansible.builtin.shell:
+        sudo systemctl daemon-reload
 
     - name: Enable and Start sonar
       ansible.builtin.service:

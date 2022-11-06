@@ -16,13 +16,14 @@ ExecStart=/opt/sonarqube/sonarqube-8.9.10.61524/bin/linux-x86-64/sonar.sh start
 
 ExecStop=/opt/sonarqube/sonarqube-8.9.10.61524/bin/linux-x86-64/sonar.sh stop
 
-
+StandardOutput=syslog
+PermissionsStartOnly=true
 
 User=sonar
 
 Group=sonar
 
-Restart=on-failure
+Restart=always
 
 
 
