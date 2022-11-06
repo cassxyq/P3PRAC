@@ -22,14 +22,18 @@ User=sonar
 
 Group=sonar
 
-Restart=always
+Restart=on-failure
 
 
 
-LimitNOFILE=131072
 
-LimitNPROC=8192
+# LimitNOFILE=131072
 
+# LimitNPROC=8192
+
+LimitNOFILE=65536
+
+LimitNPROC=4096
 
 
 [Install]

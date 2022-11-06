@@ -128,12 +128,14 @@
         shell: /bin/bash
         groups: "{{ group }}"
         append: yes
-        home: "{{ home_dir }}"
+        # home: "{{ home_dir }}"
+        home: /opt/sonarqube/sonarqube-8.9.10.61524
 
     - name: grant sonar user to access home dir
       become: yes
       ansible.builtin.file:
-        path: "{{ home_dir }}"
+        path: /opt/sonarqube/sonarqube-8.9.10.61524
+        # path: "{{ home_dir }}"
         state: directory
         owner: "{{ user }}"
         group: "{{ group }}"
@@ -165,7 +167,7 @@
         path: /opt/sonarqube/sonarqube-8.9.10.61524/conf/sonar.properties
         #regexp: '^sonar.jdbc.password='
         #insertafter: '^sonar.jdbc.password={{ db_password }}'
-        line: sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
+        line: sonar.jdbc.url=jdbc:postgresql://localhost/sonarqube
         state: present
 
     - name: replace the script file RUN_AS_USER
@@ -182,13 +184,6 @@
         src: sonar.service
         dest: /etc/systemd/system/sonar.service
 
-    - name: Enable and Start sonar
-      ansible.builtin.service:
-        name: sonar
-        state: started
-        enabled: yes
-      become: yes
-
     - name: Modify Kernel System Limits
       ansible.builtin.blockinfile:
         path: /etc/sysctl.conf
@@ -197,6 +192,16 @@
           fs.file-max=131072
           ulimit -n 131072
           ulimit -u 8192   
+
+    - name: reboot system
+      ansible.builtin.reboot:
+
+    - name: Enable and Start sonar
+      ansible.builtin.service:
+        name: sonar
+        state: started
+        enabled: yes
+      become: yes
 
 
 
