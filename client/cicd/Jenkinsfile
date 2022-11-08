@@ -1,5 +1,68 @@
 pipeline {
     agent any
+
+    options {
+        ansiColor('xterm')
+    }
+
+    environment {
+        AWS_CRED = 'casstest'
+        S3_BUCKET = 'test.notfound404.click'
+        WORKDIR = "./client"
+        CI = 'true'
+    }
+
+    stages {
+        stage("intall & test"){
+            steps{
+                dir(WORKDIR){
+                    sh "npm install"
+                    //sh "npm run test"
+                }
+            }
+        }
+
+        stage("build"){
+            steps{
+                dir(WORKDIR){
+                    sh "npm run build"
+                }
+            }
+        }
+
+        stage("upload"){
+            steps{
+                withAWS(credentials: AWS_CRED, region: 'ap-southeast-2'){
+                    script{
+                    //sh "aws s3 sync ${env.WORKSPACE}/client/dist s3://${S3_BUCKET}/ "
+                      sh "aws s3 sync ./client/build s3://${S3_BUCKET}/"
+                    }
+                }
+            }
+        }
+
+    post {
+        always{
+            cleanWs()
+        }
+
+        success{
+            emailext body: '$DEFAULT_CONTENT', 
+                subject: '$DEFAULT_SUBJECT', 
+                to: '$DEFAULT_RECIPIENTS'
+        }
+
+        failure{
+            emailext body: '$DEFAULT_CONTENT', 
+                subject: '$DEFAULT_SUBJECT', 
+                to: '$DEFAULT_RECIPIENTS'
+        }
+    }
+}
+
+
+/*pipeline {
+    agent any
     parameters {
         booleanParam defaultValue: false, name: 'TFapply'
         booleanParam defaultValue: false, name: 'Dependencies'
@@ -25,7 +88,7 @@ pipeline {
                 //git url: "https://github.com/Crazyorchid/cont8-test.git" ,branch: "main"
                 git url: "https://github.com/teambit/react-demo-app.git" ,branch: "master"
             }
-        } */
+        } 
         stage("intall & build"){
             when {expression{return params.Dependencies}}
             steps{

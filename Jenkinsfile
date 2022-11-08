@@ -13,7 +13,7 @@ pipeline {
                 branch 'test1'
             }
             steps {
-                echo 'Hello test1'
+                echo 'UAT branch test'
             }
         }
 
@@ -22,11 +22,11 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo 'MAIN BRANCH'
+                echo 'MAIN BRANCH PRODUCTION'
             }
         }
     }
-    
+
     post {
         always{
             cleanWs()

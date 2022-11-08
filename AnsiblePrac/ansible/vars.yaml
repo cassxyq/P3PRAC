@@ -1,0 +1,7 @@
+db_user: sonar
+db_password: zxcvbn000
+db_name: sonarqube
+sonar_version: 8.9.10.61524
+user: sonar
+group: sonar
+home_dir: /opt/sonarqube

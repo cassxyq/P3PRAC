@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    options {
+        ansiColor('xterm')
+    }
+
+    environment {
+        AWS_CRED = 'casstest'
+        S3_BUCKET = 'test.notfound404.click'
+        TF_DIR = "terraform/frontend"
+    }
+
+    stages {
+        stage("tfapply"){
+            steps{
+                withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
+                    dir(TF_DIR){
+                        sh "./run.sh"
+                    }
+                } 
+            }
+        }
+
+        stage("destroy"){
+            steps{
+                withAWS(credentials: 'casstest', region: 'ap-southeast-2'){
+                    dir(TF_DIR){
+                        sh "./destroy.sh"
+                    }
+                } 
+            }
+        }
+    }
+
+    post {
+        always{
+            cleanWs()
+        }
+
+        success{
+            emailext body: '$DEFAULT_CONTENT', 
+                subject: '$DEFAULT_SUBJECT', 
+                to: '$DEFAULT_RECIPIENTS'
+        }
+
+        failure{
+            emailext body: '$DEFAULT_CONTENT', 
+                subject: '$DEFAULT_SUBJECT', 
+                to: '$DEFAULT_RECIPIENTS'
+        }
+    }
+}

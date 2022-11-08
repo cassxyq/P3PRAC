@@ -1,0 +1,20 @@
+{
+    "family": "ecsprac-td",
+    "networkMode": "awsvpc", 
+    "containerDefinitions": [
+        {
+            "image": "REPLACE",
+            "name": "ecsprac-pracapp",
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 3000
+                }
+            ]
+        }
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "executionRoleArn": "arn:aws:iam::327746137438:role/ecsTaskExecutionRole"
+}

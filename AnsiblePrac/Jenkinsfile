@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    options {
+        ansiColor('xterm')
+    }
+
+    environment {
+        AWS_CRED = "casstest"
+        WORKDIR = "./"
+        AWS_REGION = "ap-southeast-2"
+    }
+
+    stages {
+        stage("TF"){
+            steps {
+                dir("./terraform")
+                withAWS(credentials: AWS_CRED, region: AWS_REGION){
+                    sh '''
+                        terraform init
+                        terraform fmt
+                        terraform apply -auto-approve
+                    '''
+                }
+            }
+        }
+
+        stage("ansible"){
+            steps {
+                dir("./ansible"){
+                    sh '''
+                        eval `ssh-agent -s` 
+                        ssh-add ~/.ssh/0906-tfprac-key-pair.pem
+                    '''
+                }
+            }
+        }
+    }
+
+
+    post {
+        always{
+            cleanWs()
+        }
+    
+    }
+}

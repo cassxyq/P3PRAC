@@ -1,0 +1,12 @@
+vpc_cidr_block      = "10.0.0.0/16"
+public_subnet_cidr  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidr = ["10.0.3.0/24", "10.0.4.0/24"]
+prefix              = "ecsprac"
+environment         = "uat"
+image_url           = "327746137438.dkr.ecr.ap-southeast-2.amazonaws.com/ecsprac:latest"
+app_port            = 3000
+domain_name         = "notfound404.click"
+aws_region          = "aws.ap-southeast-2"
+hostzone_id         = "Z00023193SDPLKPFMYO8O"
+app_count           = 2
+instance_type = "t2.micro"

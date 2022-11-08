@@ -1,0 +1,228 @@
+---
+- hosts: AWS
+  become: true
+  become_user: root
+  remote_user: ubuntu
+
+  vars_files:
+    - vars.yaml
+
+  pre_tasks:
+    - name: install pip3
+      ansible.builtin.apt: 
+        name: python3-pip 
+        state: present 
+        update_cache: yes
+
+    - name: "Install Python packages"
+      become: yes
+      ansible.builtin.pip:
+        name: psycopg2-binary
+        state: present
+
+  tasks:
+    - name: install OpenJDK11
+      become: yes
+      ansible.builtin.apt:
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+
+    - name: Add the PostgreSQL signing key
+      become: yes
+      ansible.builtin.apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state: present
+
+    # - name: Add the PostgreSQL repository
+    #   become: yes
+    #   ansible.builtin.apt_repository:
+    #     repo: "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main"
+    #     state: present
+
+    - name: Add the PostgreSQL repository
+      become: yes
+      ansible.builtin.shell: 
+        sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+
+    - name: install PostgreSQL
+      become: yes
+      ansible.builtin.apt:
+        name: postgresql, postgresql-contrib
+
+    - name: Enable and Start PostgreSQL
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: yes
+      become: yes
+
+    - name: Create app database
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+
+    - name: Create db user
+      postgresql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+      become: yes
+      become_user: postgres
+
+    - name: Change the owner to sonar
+      become: yes
+      become_user: postgres
+      postgresql_owner:
+        db: "{{ db_name }}"
+        new_owner: "{{ db_user }}"
+
+    - name: Grant db user access to app db
+      postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+      become: yes
+      become_user: postgres
+
+    - name: Modify Kernel System Limits
+      ansible.builtin.blockinfile:
+        path: /etc/sysctl.conf
+        block: |
+          vm.max_map_count=524288
+          fs.file-max=131072
+          ulimit -n 131072
+          ulimit -u 8192 
+
+    - name: Add entries in /etc/security/limits.conf
+      ansible.builtin.blockinfile:
+        path: /etc/security/limits.conf
+        block: |
+          sonarqube   -   nofile   131072
+          sonarqube   -   nproc    8192
+
+    - name: reboot system
+      ansible.builtin.reboot:
+
+    #CONFIGURE SONARQUBE
+
+    - name: install zip
+      ansible.builtin.apt:
+        name: zip
+        state: present
+        update_cache: yes
+
+    - name: sonarqube dir
+      become: yes
+      ansible.builtin.file:
+        path: "{{ home_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: download sonarqube
+      become: yes
+      ansible.builtin.get_url:
+        url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonar_version }}.zip
+        dest: "{{ home_dir }}"
+        mode: '0755'
+
+    - name: unzip file
+      become: yes
+      ansible.builtin.unarchive:
+        src: /opt/sonarqube/sonarqube-{{ sonar_version }}.zip
+        dest: "{{ home_dir }}"
+        remote_src: yes
+
+    - name: ensure group 'sonar' exists
+      ansible.builtin.group:
+        name: "{{ group }}"
+        state: present
+
+    # - name: add user to group
+    #   become: yes
+    #   ansible.builtin.user:
+    #     name: "{{ user }}"
+    #     shell: /bin/bash
+    #     groups: "{{ group }}"
+    #     append: yes
+    #     # home: "{{ home_dir }}"
+    #     home: /opt/sonarqube/sonarqube-8.9.10.61524
+
+    - name: add user to group 
+      ansible.builtin.shell:
+        sudo useradd -d /opt/sonarqube/sonarqube-8.9.10.61524 -g sonar sonar
+
+    - name: grant sonar user to access home dir
+      ansible.builtin.shell:
+        sudo chown sonar:sonar /opt/sonarqube/sonarqube-8.9.10.61524 -R
+
+    # - name: grant sonar user to access home dir
+    #   become: yes
+    #   ansible.builtin.file:
+    #     path: /opt/sonarqube/sonarqube-8.9.10.61524
+    #     # path: "{{ home_dir }}"
+    #     state: directory
+    #     owner: "{{ user }}"
+    #     group: "{{ group }}"
+
+    # - name: grant sonar user to access home dir
+    #   become: yes
+    #   ansible.builtin.shell:
+    #     chown sonar:sonar /opt/sonarqube -R
+
+    - name: replace the sonar.jdbc.username
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /opt/sonarqube/sonarqube-8.9.10.61524/conf/sonar.properties
+        regexp: '^#sonar.jdbc.username='
+        #insertafter: '^#sonar.jdbc.username='
+        line: sonar.jdbc.username=sonar
+
+    - name: replace the sonar.jdbc.password
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /opt/sonarqube/sonarqube-8.9.10.61524/conf/sonar.properties
+        regexp: '^#sonar.jdbc.password='
+        #insertafter: '^#sonar.jdbc.password='
+        line: sonar.jdbc.password={{ db_password }}
+
+    - name: add the sonar.jdbc.url
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /opt/sonarqube/sonarqube-8.9.10.61524/conf/sonar.properties
+        #regexp: '^sonar.jdbc.password='
+        #insertafter: '^sonar.jdbc.password={{ db_password }}'
+        line: sonar.jdbc.url=jdbc:postgresql://localhost/sonarqube
+        state: present
+
+    - name: replace the script file RUN_AS_USER
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /opt/sonarqube/sonarqube-8.9.10.61524/bin/linux-x86-64/sonar.sh
+        regexp: '^#RUN_AS_USER='
+        #insertafter: '^#RUN_AS_USER='
+        line: RUN_AS_USER=sonar
+
+    - name: Create a systemd service file to start SonarQube at system boot
+      become: yes
+      ansible.builtin.copy:
+        src: sonar.service
+        dest: /etc/systemd/system/sonar.service
+
+    - name: reload daemon
+      ansible.builtin.shell:
+        sudo systemctl daemon-reload
+
+    - name: Enable and Start sonar
+      ansible.builtin.service:
+        name: sonar
+        state: started
+        enabled: yes
+      become: yes
+
+
+
